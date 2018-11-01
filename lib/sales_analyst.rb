@@ -204,9 +204,39 @@ class SalesAnalyst
       summed_total = sums(totals_array.compact)
       totaled_invoice_by_merch[@merchants.find_by_id(merch_ids)] = summed_total
     end
+
     array_maxs = totaled_invoice_by_merch.max_by(number) {|keys, values| values.to_f}
     merch_only = array_maxs.flatten
     a = merch_only.delete_if {|obj| obj.class == BigDecimal}
     a
+  end
+
+  def invoice_with_all_failed_transactions(invoice_id)
+    transactions_for_invoice = @transactions.find_all_by_invoice_id(invoice_id)
+    if transactions_for_invoice.all? {|transaction| transaction.result == :failed}
+      @invoices.find_by_id(invoice_id)
+    end
+  end
+
+  def merchants_with_pending_invoices
+    invoices = @invoices.all.find_all do |invoice|
+      invoice_with_all_failed_transactions(invoice.id)
+    end
+    (invoices.map {|invoice| @merchants.find_by_id(invoice.merchant_id)}).uniq
+  end
+
+  def merchants_with_only_one_item
+    selected_merchants = items_by_merchant.select do |key, value|
+      value.count == 1
+    end
+    selected_merchants.keys.map do |merchant_id|
+      @merchants.find_by_id(merchant_id)
+    end
+  end
+
+  def merchants_with_only_one_item_registered_in_month(month)
+    merchants_with_only_one_item.find_all do |merchant|
+      Time.parse(merchant.created_at).strftime("%B") == month
+    end
   end
 end
