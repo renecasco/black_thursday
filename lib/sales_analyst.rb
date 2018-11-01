@@ -239,7 +239,7 @@ class SalesAnalyst
       Time.parse(merchant.created_at).strftime("%B") == month
     end
   end
-  
+
   def most_sold_item_for_merchant(merchant_id)
     merchant_invoices = invoices_by_merchant
     selected_invoice_items = merchant_invoices[merchant_id].map do |invoice|
@@ -260,7 +260,7 @@ class SalesAnalyst
       @items.find_by_id(item_id) if top_item[1].quantity == invoice_item.quantity
     end.compact
   end
-  
+
   def revenue_by_merchant(merchant_id)
     selected_merchant =
     merch_ids_to_invoice_ids.select do |merch_id, invoice_id|
@@ -268,5 +268,9 @@ class SalesAnalyst
     end
     totaled_array = sums(selected_merchant.values.flatten)
     BigDecimal(totaled_array)
+  end
+
+  def merchants_ranked_by_revenue
+    top_revenue_earners(@merchants.all.count).compact
   end
 end
