@@ -251,7 +251,7 @@ class SalesAnalystTest < Minitest::Test
       assert_equal 18, sa.merchants_with_only_one_item_registered_in_month("June").length
     end
 
-    def test_it_retuerns_most_sold_item_for_merchant
+    def test_it_returns_most_sold_item_for_merchant
       items = ItemRepository.new("./data/items.csv")
       merchants = MerchantRepository.new("./data/merchants.csv")
       invoices = InvoiceRepository.new("./data/invoices.csv")
