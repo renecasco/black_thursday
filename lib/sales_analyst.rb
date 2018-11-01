@@ -239,4 +239,13 @@ class SalesAnalyst
       Time.parse(merchant.created_at).strftime("%B") == month
     end
   end
+
+  def revenue_by_merchant(merchant_id)
+    selected_merchant =
+    merch_ids_to_invoice_ids.select do |merch_id, invoice_id|
+      merch_id == merchant_id
+    end
+    totaled_array = sums(selected_merchant.values.flatten)
+    BigDecimal(totaled_array)
+  end
 end
