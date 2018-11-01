@@ -219,12 +219,12 @@ class SalesAnalyst
     end
   end
 
-  def sum_ii_array(ii_array)
-    multiplied_ii_array = ii_array.map do |invoice_item|
-      invoice_item.unit_price * invoice_item.quantity
-    end
-    sums(multiplied_ii_array)
-  end
+  # def sum_ii_array(ii_array)
+  #   multiplied_ii_array = ii_array.map do |invoice_item|
+  #     invoice_item.unit_price * invoice_item.quantity
+  #   end
+  #   sums(multiplied_ii_array)
+  # end
 
   def most_sold_item_for_merchant(merchant_id)
     merchant_invoices = invoices_by_merchant
@@ -236,11 +236,15 @@ class SalesAnalyst
     invoice_items_by_item = selected_invoice_items.group_by do |invoice_item|
       invoice_item.item_id
     end
-    totals_by_item = invoice_items_by_item.each do |item_id, ii_array|
-      invoice_items_by_item[item_id] = sum_ii_array(ii_array)
+    hash = {}
+    invoice_items_by_item.each do |item_id, invoice_items|
+      top_invoice = invoice_items.max_by {|invoice_item| invoice_item.quantity}
+      hash[item_id] = top_invoice
     end
-    totals_by_item
-    binding.pry
+    top_item = hash.max_by {|item_id, invoice_item| invoice_item.quantity}
+    hash.map do |item_id, invoice_item|
+      @items.find_by_id(item_id) if top_item[1].quantity == invoice_item.quantity
+    end.compact
   end
 
 end

@@ -265,7 +265,6 @@ class SalesAnalystTest < Minitest::Test
 
       assert merchant_1.map(&:name).include?("Adult Princess Leia Hat")
       assert merchant_1.map(&:id).include?(263524984)
-      assert merhcnat_2.map(&:id).include?(263524984)
       assert_equal 4, sa.most_sold_item_for_merchant(12337105).length
     end
 end
