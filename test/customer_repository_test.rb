@@ -4,7 +4,6 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/customer_repository'
 require 'time'
-require 'pry'
 
 class CustomerRepositoryTest < Minitest::Test
   def test_customer_repository_exists
@@ -85,7 +84,7 @@ class CustomerRepositoryTest < Minitest::Test
       created_at: Time.now
       })
     cr.update(1001, attributes)
-    assert_equal nil, cr.find_by_id(2000)
+    assert_nil cr.find_by_id(2000)
     assert_equal cr.all[1000], cr.find_by_id(1001)
     updated_customer = cr.all.last
     created_at = cr.find_by_id(1001).created_at != attributes[:created_at]

@@ -6,7 +6,6 @@ require './lib/invoice'
 require './lib/invoice_repository'
 require 'bigdecimal'
 require 'time'
-require 'pry'
 
 class InvoiceRepositoryTest < Minitest::Test
 
@@ -25,7 +24,7 @@ class InvoiceRepositoryTest < Minitest::Test
   def test_it_can_find_all_invoices_by_invoice_id
     ir = InvoiceRepository.new("./data/invoices.csv")
     assert_equal ir.all[3451], ir.find_by_id(3452)
-    assert_equal nil, ir.find_by_id(5000)
+    assert_nil ir.find_by_id(5000)
   end
 
   def test_it_can_find_all_invoices_by_customer_id
@@ -94,7 +93,7 @@ class InvoiceRepositoryTest < Minitest::Test
       created_at: Time.now
       })
     ir.update(4986, attributes)
-    assert_equal nil, ir.find_by_id(5000)
+    assert_nil ir.find_by_id(5000)
     assert_equal ir.all[4985], ir.find_by_id(4986)
     updated_invoice = ir.all.last
     assert_equal 7 , updated_invoice.customer_id
