@@ -181,17 +181,24 @@ class SalesAnalyst
       in_id = invoices.map do |invoice|
         invoice.id
       end
-      ids_hash[merchant_id] = in_id
+      successful_in_id = in_id.reject do |id|
+        if (@transactions.find_by_id(id)).result == :success
+          id
+        else
+          0
+        end
+      end
+      ids_hash[merchant_id] = successful_in_id
     end
+    ids_hash
   end
 
-  def top_revenue_earners(number = 20)
+  def top_revenue_earners(number)
     totaled_invoice_by_merch = Hash.new
     merch_ids_to_invoice_ids.map do |merch_ids ,invoice_ids|
       totaled_invoice_by_merch[@merchants.find_by_id(merch_ids)] = invoice_total(invoice_ids)
     end
-    totaled_invoice_by_merch
-
-    require'pry';binding.pry
+    array_maxs = totaled_invoice_by_merch.max_by(number) {|keys, values| values}
+    array_maxs.flatten.compact
   end
 end
