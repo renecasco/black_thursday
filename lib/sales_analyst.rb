@@ -204,5 +204,12 @@ class SalesAnalyst
     (invoices.map {|invoice| @merchants.find_by_id(invoice.merchant_id)}).uniq
   end
 
-
+  def merchants_with_only_one_item
+    selected_merchants = items_by_merchant.select do |key, value|
+      value.count == 1
+    end
+    selected_merchants.keys.map do |merchant_id|
+      @merchants.find_by_id(merchant_id)
+    end
+  end
 end
