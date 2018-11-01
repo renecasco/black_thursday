@@ -237,4 +237,17 @@ class SalesAnalystTest < Minitest::Test
       assert_equal 243, sa.merchants_with_only_one_item.length
     end
 
+
+    def test_it_returns_merchants_with_only_one_item_registered_in_month
+      items = ItemRepository.new("./data/items.csv")
+      merchants = MerchantRepository.new("./data/merchants.csv")
+      invoices = InvoiceRepository.new("./data/invoices.csv")
+      invoice_items = InvoiceItemRepository.new('./data/invoice_items.csv')
+      customers = CustomerRepository.new('./data/customers.csv')
+      transactions = TransactionRepository.new('./data/transactions.csv')
+      sa = SalesAnalyst.new(items, merchants, invoices,invoice_items, customers, transactions)
+      assert_instance_of Merchant, sa.merchants_with_only_one_item_registered_in_month("March").first
+      assert_equal 21, sa.merchants_with_only_one_item_registered_in_month("March").length
+      assert_equal 18, sa.merchants_with_only_one_item_registered_in_month("June").length
+    end
 end
