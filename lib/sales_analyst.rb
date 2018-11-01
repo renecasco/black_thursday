@@ -175,20 +175,24 @@ class SalesAnalyst
     sums(totals_array)
   end
 
+  def successful_invoices_by_merchant
+    succ_hash = Hash.new
+    invoices_by_merchant.map do |merchant_id, invoices|
+      good_invoices = invoices.select do |invoice|
+        invoice_paid_in_full?(invoice.id)
+      end
+      succ_hash[merchant_id] = good_invoices
+    end
+    succ_hash
+  end
+
   def merch_ids_to_invoice_ids
     ids_hash = Hash.new
-    invoices_by_merchant.map do |merchant_id, invoices|
+    successful_invoices_by_merchant.map do |merchant_id, invoices|
       in_id = invoices.map do |invoice|
         invoice.id
       end
-      successful_in_id = in_id.reject do |id|
-        if (@transactions.find_by_id(id)).result == :success
-          id
-        else
-          0
-        end
-      end
-      ids_hash[merchant_id] = successful_in_id
+      ids_hash[merchant_id] = in_id
     end
     ids_hash
   end
@@ -196,9 +200,13 @@ class SalesAnalyst
   def top_revenue_earners(number)
     totaled_invoice_by_merch = Hash.new
     merch_ids_to_invoice_ids.map do |merch_ids ,invoice_ids|
-      totaled_invoice_by_merch[@merchants.find_by_id(merch_ids)] = invoice_total(invoice_ids)
+      totals_array = invoice_ids.map {|id|invoice_total(id)}
+      summed_total = sums(totals_array.compact)
+      totaled_invoice_by_merch[@merchants.find_by_id(merch_ids)] = summed_total
     end
-    array_maxs = totaled_invoice_by_merch.max_by(number) {|keys, values| values}
-    array_maxs.flatten.compact
+    array_maxs = totaled_invoice_by_merch.max_by(number) {|keys, values| values.to_f}
+    merch_only = array_maxs.flatten
+    a = merch_only.delete_if {|obj| obj.class == BigDecimal}
+    a
   end
 end
