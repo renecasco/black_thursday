@@ -221,10 +221,20 @@ class SalesAnalystTest < Minitest::Test
       customers = CustomerRepository.new('./data/customers.csv')
       transactions = TransactionRepository.new('./data/transactions.csv')
       sa = SalesAnalyst.new(items, merchants, invoices,invoice_items, customers, transactions)
-      date = Time.parse("2009-02-07")
       assert_instance_of Merchant, sa.merchants_with_pending_invoices.first
       assert_equal 467, sa.merchants_with_pending_invoices.length
     end
 
+    def test_it_returns_merchants_with_only_one_item
+      items = ItemRepository.new("./data/items.csv")
+      merchants = MerchantRepository.new("./data/merchants.csv")
+      invoices = InvoiceRepository.new("./data/invoices.csv")
+      invoice_items = InvoiceItemRepository.new('./data/invoice_items.csv')
+      customers = CustomerRepository.new('./data/customers.csv')
+      transactions = TransactionRepository.new('./data/transactions.csv')
+      sa = SalesAnalyst.new(items, merchants, invoices,invoice_items, customers, transactions)
+      assert_instance_of Merchant, sa.merchants_with_only_one_item.first
+      assert_equal 243, sa.merchants_with_only_one_item.length
+    end
 
 end
