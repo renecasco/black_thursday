@@ -218,4 +218,29 @@ class SalesAnalyst
       Time.parse(merchant.created_at).strftime("%B") == month
     end
   end
+
+  def sum_ii_array(ii_array)
+    multiplied_ii_array = ii_array.map do |invoice_item|
+      invoice_item.unit_price * invoice_item.quantity
+    end
+    sums(multiplied_ii_array)
+  end
+
+  def most_sold_item_for_merchant(merchant_id)
+    merchant_invoices = invoices_by_merchant
+    selected_invoice_items = merchant_invoices[merchant_id].map do |invoice|
+      if invoice_paid_in_full?(invoice.id)
+        @invoice_items.find_all_by_invoice_id(invoice.id)
+      end
+    end.compact.flatten
+    invoice_items_by_item = selected_invoice_items.group_by do |invoice_item|
+      invoice_item.item_id
+    end
+    totals_by_item = invoice_items_by_item.each do |item_id, ii_array|
+      invoice_items_by_item[item_id] = sum_ii_array(ii_array)
+    end
+    totals_by_item
+    binding.pry
+  end
+
 end
