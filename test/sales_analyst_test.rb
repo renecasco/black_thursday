@@ -40,7 +40,6 @@ class SalesAnalystTest < Minitest::Test
     items = ItemRepository.new("./data/items.csv")
     merchants = MerchantRepository.new("./data/merchants.csv")
     sa = SalesAnalyst.new(items, merchants)
-#   binding.pry
     assert_equal 52, sa.merchants_with_high_item_count.length
   end
 
@@ -260,8 +259,8 @@ class SalesAnalystTest < Minitest::Test
 
       actual = sa.revenue_by_merchant(12334194)
       assert_equal 33898, actual
-    end
-
+    end 
+  
     def test_it_returns_most_sold_item_for_merchant
       items = ItemRepository.new("./data/items.csv")
       merchants = MerchantRepository.new("./data/merchants.csv")
@@ -277,6 +276,18 @@ class SalesAnalystTest < Minitest::Test
       assert merchant_1.map(&:name).include?("Adult Princess Leia Hat")
       assert merchant_1.map(&:id).include?(263524984)
       assert_equal 4, sa.most_sold_item_for_merchant(12337105).length
+    end
+  
+    def test_if_can_return_the_best_item_for_merchant
+      items = ItemRepository.new("./data/items.csv")
+      merchants = MerchantRepository.new("./data/merchants.csv")
+      invoices = InvoiceRepository.new("./data/invoices.csv")
+      invoice_items = InvoiceItemRepository.new('./data/invoice_items.csv')
+      customers = CustomerRepository.new('./data/customers.csv')
+      transactions = TransactionRepository.new('./data/transactions.csv')
+      sa = SalesAnalyst.new(items, merchants, invoices,invoice_items, customers, transactions)
+
+      assert_equal 263516130, sa.best_item_for_merchant(12334189).id
     end
 
     def test_it_returns_merchants_ranked_by_revenue
