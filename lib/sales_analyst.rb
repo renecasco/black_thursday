@@ -197,7 +197,7 @@ class SalesAnalyst
     ids_hash
   end
 
-  def top_revenue_earners(number)
+  def top_revenue_earners(number = 20)
     totaled_invoice_by_merch = Hash.new
     merch_ids_to_invoice_ids.map do |merch_ids ,invoice_ids|
       totals_array = invoice_ids.map {|id|invoice_total(id)}
