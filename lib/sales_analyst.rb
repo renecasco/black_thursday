@@ -239,7 +239,28 @@ class SalesAnalyst
       Time.parse(merchant.created_at).strftime("%B") == month
     end
   end
-
+  
+  def most_sold_item_for_merchant(merchant_id)
+    merchant_invoices = invoices_by_merchant
+    selected_invoice_items = merchant_invoices[merchant_id].map do |invoice|
+      if invoice_paid_in_full?(invoice.id)
+        @invoice_items.find_all_by_invoice_id(invoice.id)
+      end
+    end.compact.flatten
+    invoice_items_by_item = selected_invoice_items.group_by do |invoice_item|
+      invoice_item.item_id
+    end
+    hash = {}
+    invoice_items_by_item.each do |item_id, invoice_items|
+      top_invoice = invoice_items.max_by {|invoice_item| invoice_item.quantity}
+      hash[item_id] = top_invoice
+    end
+    top_item = hash.max_by {|item_id, invoice_item| invoice_item.quantity}
+    hash.map do |item_id, invoice_item|
+      @items.find_by_id(item_id) if top_item[1].quantity == invoice_item.quantity
+    end.compact
+  end
+  
   def revenue_by_merchant(merchant_id)
     selected_merchant =
     merch_ids_to_invoice_ids.select do |merch_id, invoice_id|
