@@ -261,6 +261,6 @@ class SalesAnalystTest < Minitest::Test
       sa = SalesAnalyst.new(items, merchants, invoices,invoice_items, customers, transactions)
 
       actual = sa.revenue_by_merchant(12334194)
-      assert_equal 0 , actual
+      assert_equal 33898, actual
     end
 end
