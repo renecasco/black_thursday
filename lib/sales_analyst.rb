@@ -239,4 +239,7 @@ class SalesAnalyst
       Time.parse(merchant.created_at).strftime("%B") == month
     end
   end
+
+  def revenue_by_merchant(merchant_id)
+  end
 end
