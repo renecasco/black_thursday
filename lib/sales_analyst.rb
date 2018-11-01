@@ -248,4 +248,27 @@ class SalesAnalyst
     totaled_array = sums(selected_merchant.values.flatten)
     BigDecimal(totaled_array)
   end
+
+  def best_item_for_merchant(merchant_id)
+    array_1 = Array.new
+    items_by_revenue_hash = Hash.new
+    selected_merchant =
+    successful_invoices_by_merchant.select do |merch_id, invoice_id|
+      merch_id == merchant_id
+    end
+    invoice_ids = selected_merchant.values
+    flattened_array = invoice_ids.flatten
+    invoice_items = flattened_array.map do |invoice_item|
+      @invoice_items.find_all_by_invoice_id(invoice_item.id)
+    end
+      items_by_revenue_hash[(invoice_items.flatten).flatten] = (invoice_items.flatten.map {|i_i| i_i.unit_price * i_i.quantity}).flatten
+    a = items_by_revenue_hash.keys
+    b = items_by_revenue_hash.values
+    c = a.flatten
+    d = b.flatten.compact
+    i_i_values_hash = c.zip(d).to_h
+    best_item_hash = i_i_values_hash.max_by {|keys,values| values}
+    i_i_selected = best_item_hash[0].item_id
+    @items.find_by_id (i_i_selected)
+  end
 end

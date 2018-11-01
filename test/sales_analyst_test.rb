@@ -272,8 +272,7 @@ class SalesAnalystTest < Minitest::Test
       customers = CustomerRepository.new('./data/customers.csv')
       transactions = TransactionRepository.new('./data/transactions.csv')
       sa = SalesAnalyst.new(items, merchants, invoices,invoice_items, customers, transactions)
-      
+
       assert_equal 263516130, sa.best_item_for_merchant(12334189).id
-      assert_equal 263516130, sa.best_item_for_merchant(12337105).id
     end
 end
